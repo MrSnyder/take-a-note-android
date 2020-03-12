@@ -12,7 +12,8 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
+    public static final String EXTRA_ID = "de.beefcafe.takeanote.EXTRA_ID";
     public static final String EXTRA_TITLE = "de.beefcafe.takeanote.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION = "de.beefcafe.takeanote.EXTRA_DESCRIPTION";
     public static final String EXTRA_PRIORITY = "de.beefcafe.takeanote.EXTRA_PRIORITY";
@@ -31,7 +32,15 @@ public class AddNoteActivity extends AppCompatActivity {
         numberPickerPriority.setMinValue(1);
         numberPickerPriority.setMaxValue(10);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Note");
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_ID)) {
+            setTitle("Edit Note");
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+        } else {
+            setTitle("Add Note");
+        }
     }
 
     @Override
@@ -61,6 +70,10 @@ public class AddNoteActivity extends AppCompatActivity {
             return;
         }
         Intent data = new Intent();
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1) {
+            data.putExtra(EXTRA_ID, id);
+        }
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_PRIORITY, priority);
